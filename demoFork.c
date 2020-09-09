@@ -4,32 +4,55 @@
 
 
 #include  <stdio.h>
-#include  <sys/types.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/mman.h>
+#include <string.h>
 
-#define   MAX_COUNT  2400
+#define   MAX_COUNT  5
 
 void  ChildProcess(void);                /* ChildProcess   */
 void  ParentProcess(void);               /* ParentProcess  */
+void* createSharedMemory(size_t size);
 
-void  main(void)
+int main(void)
 {
+     char myString[50];
      pid_t  pid;
-
+     int arr[10];
+     
+     strcpy(myString, "This is my original string");
+     void *sharedMem = createSharedMemory(sizeof(myString));
+     memcpy(sharedMem, myString, sizeof(myString));
+     printf("%s\n",myString);
      pid = fork();
-     if (pid == 0) 
-          ChildProcess();
-     else 
+     if (pid == 0){
+     	  ChildProcess();
+          strcpy(sharedMem, "The child process has editted the string!");
+     }
+     else{
+          wait(NULL);
           ParentProcess();
+          strcpy(myString,sharedMem);
+          printf("%s\n",myString);
+     }
+     return 0;
+}
+
+void* createSharedMemory(size_t size){
+  int protection = PROT_READ | PROT_WRITE;
+  int visibility = MAP_SHARED | MAP_ANONYMOUS;
+  return mmap(NULL, size, protection, visibility,-1,0);
 }
 
 void  ChildProcess(void)
 {
      int   i;
-	 pid_t pid_C = getpid();
+     pid_t pid_C = getpid();
      printf("Childprocess ID = %d\n", pid_C);
      for (i = 1; i <= MAX_COUNT; i++)
-          printf("   This line is from child, value = %d\n", i);
-     printf("   *** Child process is done ***\n");
+          printf("This line is from child, value = %d\n", i);
+     printf("*** Child process is done ***\n\n");
 }
 
 void  ParentProcess(void)
