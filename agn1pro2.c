@@ -50,7 +50,7 @@ int main(void){
     populate(sharedUsers,SIZE);
   } else if (pid>0){
     //parent process
-    
+    wait(NULL);
     
   }else{
     printf("The fork did not succeed.\n");

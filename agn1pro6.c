@@ -43,15 +43,17 @@ int main(void){
   memcpy(sharedUsers, usersArray, sizeof(usersArray));
   struct user* users = sharedUsers;
   
+
+  
   pid_t pid = fork();
   
   if(pid==0){
     //child process
-    populate(sharedUsers,SIZE);
+    char* args[2] = {"/bin/ls",NULL};
+    execv(args[0],args);
   } else if (pid>0){
     //parent process
-    
-    
+    wait(NULL);
   }else{
     printf("The fork did not succeed.\n");
   }

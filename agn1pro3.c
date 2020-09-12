@@ -50,8 +50,14 @@ int main(void){
     populate(sharedUsers,SIZE);
   } else if (pid>0){
     //parent process
-    
-    
+    int status;
+    waitpid(pid, &status,0);
+    if ( WIFEXITED(status) ){
+    	const int es = WEXITSTATUS(status);
+    	printf("Exit status was %d\n", es);
+    }
+    printf("Child pid was %d\n", pid);
+
   }else{
     printf("The fork did not succeed.\n");
   }

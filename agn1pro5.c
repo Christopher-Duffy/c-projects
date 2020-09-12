@@ -43,15 +43,25 @@ int main(void){
   memcpy(sharedUsers, usersArray, sizeof(usersArray));
   struct user* users = sharedUsers;
   
+
+  
   pid_t pid = fork();
   
-  if(pid==0){
+   if(pid==0){
     //child process
-    populate(sharedUsers,SIZE);
+    int x = 1;
+    while (x>0){
+      printf("%d ",x);
+      if(x%10 == 0){
+        printf("\n");
+      }
+      x++;
+    }
   } else if (pid>0){
     //parent process
-    
-    
+    sleep(3);
+    kill(pid, SIGKILL);
+    printf("\n");
   }else{
     printf("The fork did not succeed.\n");
   }
