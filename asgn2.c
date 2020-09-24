@@ -47,20 +47,24 @@ int main(void){
   if(threadID!=0){
     //parent only process
     while(1){
-      sleep(1);
-      sem_wait(sharedLock1);  
-      incrementRandom(sharedArr,SIZE);
-      sem_post(sharedLock1);
+      sleep(0);
+      if(sem_trywait(sharedLock1) == 0 && sem_trywait(sharedLock2)==0){  
+      	incrementRandom(sharedArr,SIZE);
+      	sem_post(sharedLock1);
+      	sem_post(sharedLock2);
+      }
     }
   }else{
     
       //child only process
     while(1){
-      sleep(1);
-      sem_wait(sharedLock1);
-      printArray(sharedArr,SIZE);
-      checkValues(sharedArr,SIZE);
-      sem_post(sharedLock1);
+      sleep(0);
+      if(sem_trywait(sharedLock1) == 0  && sem_trywait(sharedLock2)==0){
+        printArray(sharedArr,SIZE);
+        checkValues(sharedArr,SIZE);
+        sem_post(sharedLock1);
+        sem_post(sharedLock2);
+      }
     }
   }
   //this stuff will never actually occur, but it's good practice

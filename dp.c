@@ -2,7 +2,8 @@
 
 #include <pthread.h> 
 #include <semaphore.h> 
-#include <stdio.h> 
+#include <stdio.h>
+#include <unistd.h> //had to add unistd for sleep() to compile
   
 #define N 5 
 #define THINKING 2 
